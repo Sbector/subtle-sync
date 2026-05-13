@@ -13,6 +13,9 @@ const Controls = {
     right: 'right',
 }
 
+const MOVE_SPEED_KEYBOARD = 0.1
+const LOOK_DAMPING = 0.85
+
 function Model() {
     const { scene } = useGLTF('/models/SalaColab.glb')
     return <primitive object={scene} />
@@ -22,10 +25,9 @@ function FPSMovement({ mobileMovementRef, mobileLookRef, pointerLockRef }) {
     const { camera } = useThree()
     const [, get] = useKeyboardControls()
     
-    const moveSpeed = 0.1
-    const lookSensitivity = 0.003
     const direction = new Vector3()
     const euler = new Euler(0, 0, 0, 'YXZ')
+    const lastLookRef = useRef({ x: 0, y: 0 })
 
     useFrame(() => {
         const state = get()
@@ -37,7 +39,7 @@ function FPSMovement({ mobileMovementRef, mobileLookRef, pointerLockRef }) {
         if (state.forward) direction.z -= 1
         if (state.back) direction.z += 1
 
-        // Mobile movement
+        // Mobile movement (already scaled)
         const mobileMove = mobileMovementRef.current
         direction.x += mobileMove.x
         direction.z += mobileMove.z
@@ -45,22 +47,26 @@ function FPSMovement({ mobileMovementRef, mobileLookRef, pointerLockRef }) {
         // Apply movement
         if (direction.length() > 0) {
             direction.normalize()
-            camera.translateX(direction.x * moveSpeed)
-            camera.translateZ(direction.z * moveSpeed)
+            camera.translateX(direction.x * MOVE_SPEED_KEYBOARD)
+            camera.translateZ(direction.z * MOVE_SPEED_KEYBOARD)
         }
 
-        // Mobile look (if pointer lock is not active, allow mobile look)
+        // Mobile look (if pointer lock is not active)
         if (pointerLockRef.current && !pointerLockRef.current.isLocked) {
             const mobileLook = mobileLookRef.current
+            
+            // Apply damping for smooth look
+            lastLookRef.current.x = lastLookRef.current.x * LOOK_DAMPING + mobileLook.x * (1 - LOOK_DAMPING)
+            lastLookRef.current.y = lastLookRef.current.y * LOOK_DAMPING + mobileLook.y * (1 - LOOK_DAMPING)
+            
             euler.setFromQuaternion(camera.quaternion)
-            euler.rotateY(-mobileLook.deltaX * lookSensitivity)
-            euler.rotateX(-mobileLook.deltaY * lookSensitivity)
+            euler.rotateY(-lastLookRef.current.x)
+            euler.rotateX(-lastLookRef.current.y)
             
             // Clamp pitch to prevent flipping
             euler.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, euler.x))
             
             camera.quaternion.setFromEuler(euler)
-            mobileLookRef.current = { deltaX: 0, deltaY: 0 }
         }
     })
 
@@ -69,6 +75,20 @@ function FPSMovement({ mobileMovementRef, mobileLookRef, pointerLockRef }) {
 
 function PointerLock({ pointerLockRef }) {
     const { camera, gl } = useThree()
+    const [isDesktop, setIsDesktop] = useState(true)
+
+    useEffect(() => {
+        const isTouchDevice = () => {
+            return (
+                (typeof window !== 'undefined' &&
+                    ('ontouchstart' in window ||
+                        navigator.maxTouchPoints > 0 ||
+                        navigator.msMaxTouchPoints > 0)) ||
+                window.matchMedia('(pointer: coarse)').matches
+            )
+        }
+        setIsDesktop(!isTouchDevice())
+    }, [])
 
     return (
         <>
@@ -77,33 +97,35 @@ function PointerLock({ pointerLockRef }) {
                 camera={camera}
                 domElement={gl.domElement}
             />
-            <Html fullScreen>
-                <div style={{
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    textAlign: 'center',
-                    color: 'white',
-                    pointerEvents: 'auto',
-                    cursor: 'pointer',
-                    zIndex: 10
-                }}
-                onClick={() => {
-                    pointerLockRef.current?.lock?.()
-                }}
-                >
+            {isDesktop && (
+                <Html fullScreen>
                     <div style={{
-                        background: 'rgba(0, 0, 0, 0.7)',
-                        padding: '40px',
-                        borderRadius: '8px',
-                        border: '2px solid rgba(255, 255, 255, 0.3)'
-                    }}>
-                        <h2 style={{ margin: '0 0 10px 0', fontSize: '24px' }}>Click to explore</h2>
-                        <p style={{ margin: '0', fontSize: '14px', opacity: 0.8 }}>WASD to move, mouse to look around</p>
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        textAlign: 'center',
+                        color: 'white',
+                        pointerEvents: 'auto',
+                        cursor: 'pointer',
+                        zIndex: 10
+                    }}
+                    onClick={() => {
+                        pointerLockRef.current?.lock?.()
+                    }}
+                    >
+                        <div style={{
+                            background: 'rgba(0, 0, 0, 0.7)',
+                            padding: '40px',
+                            borderRadius: '8px',
+                            border: '2px solid rgba(255, 255, 255, 0.3)'
+                        }}>
+                            <h2 style={{ margin: '0 0 10px 0', fontSize: '24px' }}>Click to explore</h2>
+                            <p style={{ margin: '0', fontSize: '14px', opacity: 0.8 }}>WASD to move, mouse to look around</p>
+                        </div>
                     </div>
-                </div>
-            </Html>
+                </Html>
+            )}
         </>
     )
 }
@@ -137,8 +159,16 @@ export default function Scene() {
     ], [])
 
     const mobileMovementRef = useRef({ x: 0, z: 0 })
-    const mobileLookRef = useRef({ deltaX: 0, deltaY: 0 })
+    const mobileLookRef = useRef({ x: 0, y: 0 })
     const pointerLockRef = useRef(null)
+
+    const handleMobileMovement = (movement) => {
+        mobileMovementRef.current = movement
+    }
+
+    const handleMobileLook = (look) => {
+        mobileLookRef.current = look
+    }
 
     return (
         <KeyboardControls map={keyboardMap}>
@@ -148,12 +178,8 @@ export default function Scene() {
                 pointerLockRef={pointerLockRef}
             />
             <MobileControls
-                onMovement={(movement) => {
-                    mobileMovementRef.current = movement
-                }}
-                onLook={(look) => {
-                    mobileLookRef.current = look
-                }}
+                onMovement={handleMobileMovement}
+                onLook={handleMobileLook}
             />
         </KeyboardControls>
     )
