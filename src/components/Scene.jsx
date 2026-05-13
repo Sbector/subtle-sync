@@ -16,7 +16,6 @@ export default function Scene() {
             camera={{ position: [0, 0, 3] }}
             gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 2.5 }}
         >
-
             <Light />
             <ArcballControls
                 enablePan={false}

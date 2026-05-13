@@ -6,12 +6,11 @@
 .pnp.js
 .yarn/install-state.gz
 
+# astro build output
+/dist/
+
 # testing
 /coverage
-
-# next.js
-/.next/
-/out/
 
 # production
 /build
@@ -33,4 +32,6 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
-next-env.d.ts
+
+# pnpm
+pnpm-lock.yaml

@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Scene from '../components/Scene.jsx';
+---
+
+<Layout title="Subtle Sync">
+	<Scene client:load />
+	<div class="mensaje">
+		<h1 class="text-stone-400">Double tap for fullscreen</h1>
+	</div>
+</Layout>
