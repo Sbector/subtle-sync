@@ -14,6 +14,7 @@ export default function Light() {
 
     return (
         <mesh>
+            <ambientLight intensity={0.6} />
             <pointLight
                 ref={lightRef}
                 intensity={0}
