@@ -26,9 +26,10 @@ function Model() {
     return <primitive object={scene} />
 }
 
-function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
+function LucesModel({ listener, audioEnabled = false, modelPath = '/models/Luces.glb' }) {
     const { scene } = useGLTF(modelPath)
     const lightMaterialsRef = useRef([])
+    const audioNodesRef = useRef([])
     const audioBufferRef = useRef(null)
 
     // Load audio buffer once, shared across all spheres
@@ -39,10 +40,8 @@ function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
         })
     }, [])
 
+    // Initialize materials and point lights — always runs, no listener dependency
     useEffect(() => {
-        if (!listener) return
-
-        // Initialize light materials, pointLights, positionalAudio and parameters
         const materials = []
         scene.traverse((node) => {
             if (node.isMesh) {
@@ -55,7 +54,6 @@ function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
                 })
                 node.material = material
 
-                // Position point light at geometric center of each sphere
                 if (!node.geometry.boundingBox) {
                     node.geometry.computeBoundingBox()
                 }
@@ -69,18 +67,10 @@ function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
                 pointLight.position.copy(localCenter)
                 node.add(pointLight)
 
-                // Positional audio for this sphere
-                const positionalAudio = new PositionalAudio(listener)
-                positionalAudio.setRefDistance(2)
-                positionalAudio.setLoop(false)
-                positionalAudio.setVolume(0.35)
-                positionalAudio.position.copy(localCenter)
-                node.add(positionalAudio)
-
                 materials.push({
                     material,
                     pointLight,
-                    positionalAudio,
+                    localCenter,
                     node,
                     phase: Math.random() * Math.PI * 2,
                     frequency: 0.8 * (0.8 + Math.random() * 0.4),
@@ -92,28 +82,59 @@ function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
         lightMaterialsRef.current = materials
 
         return () => {
-            materials.forEach(({ material, pointLight, positionalAudio, node }) => {
+            materials.forEach(({ material, pointLight, node }) => {
                 material.dispose()
                 node.remove(pointLight)
+            })
+            lightMaterialsRef.current = []
+        }
+    }, [scene])
+
+    // Set up positional audio nodes — only when listener is available
+    useEffect(() => {
+        // Cleanup any previous audio nodes
+        audioNodesRef.current.forEach(({ positionalAudio, node }) => {
+            if (positionalAudio.isPlaying) positionalAudio.stop()
+            node.remove(positionalAudio)
+        })
+        audioNodesRef.current = []
+
+        if (!listener) return
+
+        const audioNodes = []
+        lightMaterialsRef.current.forEach(({ node, localCenter }) => {
+            const positionalAudio = new PositionalAudio(listener)
+            positionalAudio.setRefDistance(2)
+            positionalAudio.setLoop(false)
+            positionalAudio.setVolume(0.35)
+            positionalAudio.position.copy(localCenter)
+            node.add(positionalAudio)
+            audioNodes.push({ positionalAudio, node })
+        })
+        audioNodesRef.current = audioNodes
+
+        return () => {
+            audioNodes.forEach(({ positionalAudio, node }) => {
                 if (positionalAudio.isPlaying) positionalAudio.stop()
                 node.remove(positionalAudio)
             })
+            audioNodesRef.current = []
         }
-    }, [scene, listener])
+    }, [listener])
 
-    // Animation loop
+    // Animation loop — always runs
     useFrame((state) => {
         const elapsedTime = state.clock.elapsedTime
         const cycleDuration = 60
         const globalFrequency = 0.8
         const amplitude = 5
-        const audioTriggerFactor = 0.4  // Adjust this to sync audio timing: lower = earlier trigger, higher = later
+        const audioTriggerFactor = 0.4
 
         // Cyclic sync/desync: oscillates smoothly between 0 and 1
         const syncFactor = (Math.sin(elapsedTime / cycleDuration * Math.PI * 2 - Math.PI / 2) + 1) / 2
 
-        lightMaterialsRef.current.forEach((entry) => {
-            const { material, pointLight, positionalAudio, phase, frequency, tempColor } = entry
+        lightMaterialsRef.current.forEach((entry, i) => {
+            const { material, pointLight, phase, frequency, tempColor } = entry
 
             // Local oscillator
             const localOscillation = Math.abs(Math.sin((elapsedTime + phase) / frequency) * amplitude)
@@ -122,16 +143,14 @@ function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
             // Interpolate between local and global
             const intensity = MathUtils.lerp(localOscillation, globalOscillation, syncFactor)
 
-            // Detect peak: intensity rises above audioTriggerFactor% of amplitude
+            // Detect peak: trigger audio if enabled and node exists
             const peakThreshold = audioTriggerFactor * amplitude
-            if (intensity > peakThreshold && entry.prevIntensity <= peakThreshold) {
-                if (audioBufferRef.current) {
+            if (audioEnabled && intensity > peakThreshold && entry.prevIntensity <= peakThreshold) {
+                const audioNode = audioNodesRef.current[i]
+                if (audioNode && audioBufferRef.current) {
+                    const { positionalAudio } = audioNode
                     const ctx = ThreeAudioContext.getContext()
-                    // Stop any ongoing playback
-                    if (positionalAudio.isPlaying) {
-                        positionalAudio.stop()
-                    }
-                    // Fade in from 0 to 0.35 over 20ms to eliminate clicks
+                    if (positionalAudio.isPlaying) positionalAudio.stop()
                     const gainParam = positionalAudio.gain.gain
                     gainParam.cancelScheduledValues(ctx.currentTime)
                     gainParam.setValueAtTime(0, ctx.currentTime)
@@ -160,12 +179,17 @@ function LucesModel({ listener, modelPath = '/models/Luces.glb' }) {
 useGLTF.preload('/models/Luces.glb')
 useGLTF.preload('/models/Luces2.glb')
 
-function SceneInner({ sceneState = 3, orbitEnabled = false }) {
+function SceneInner({ sceneState = 3, orbitEnabled = false, audioEnabled = false }) {
     const { camera } = useThree()
     const [listener, setListener] = useState(null)
 
-    // Create AudioListener and attach to camera once
+    // Create AudioListener and attach to camera only when audioEnabled is true
     useEffect(() => {
+        if (!audioEnabled) {
+            setListener(null)
+            return
+        }
+
         const audioListener = new AudioListener()
         camera.add(audioListener)
 
@@ -199,7 +223,7 @@ function SceneInner({ sceneState = 3, orbitEnabled = false }) {
             compressor.disconnect()
             window.removeEventListener('pointerdown', unlock)
         }
-    }, [camera])
+    }, [camera, audioEnabled])
 
     const modelPath = sceneState === 3 ? '/models/Luces2.glb' : '/models/Luces.glb'
     const ambientIntensity = sceneState === 1 ? 0.4 : 0.05
@@ -208,7 +232,7 @@ function SceneInner({ sceneState = 3, orbitEnabled = false }) {
         <>
             <ambientLight intensity={ambientIntensity} color={'#ffffff'} />
             <Model />
-            {sceneState !== 1 && <LucesModel listener={listener} modelPath={modelPath} />}
+            {sceneState !== 1 && <LucesModel listener={listener} audioEnabled={audioEnabled} modelPath={modelPath} />}
             {orbitEnabled && <OrbitControls enableDamping dampingFactor={0.05} />}
         </>
     )
@@ -348,6 +372,7 @@ export default function Scene() {
     const [sceneState, setSceneState] = useState(3)
     const [orbitEnabled, setOrbitEnabled] = useState(false)
     const [modalDismissed, setModalDismissed] = useState(false)
+    const [audioEnabled, setAudioEnabled] = useState(false)
 
     const onDoubleClick = (e) => {
         if (orbitEnabled) {
@@ -424,9 +449,52 @@ export default function Scene() {
                     camera={{ position: [3.5, 1.5, 4.5] }}
                     gl={{ toneMapping: ACESFilmicToneMapping, toneMappingExposure: 2.5 }}
                 >
-                    <SceneInner sceneState={sceneState} orbitEnabled={orbitEnabled} />
+                    <SceneInner sceneState={sceneState} orbitEnabled={orbitEnabled} audioEnabled={audioEnabled} />
                 </Canvas>
                 <StateHUD sceneState={sceneState} onStateChange={setSceneState} visible={orbitEnabled} />
+                {/* Audio toggle button */}
+                <button
+                    onClick={() => setAudioEnabled(!audioEnabled)}
+                    style={{
+                        position: 'fixed',
+                        bottom: '2rem',
+                        right: '2rem',
+                        width: '44px',
+                        height: '44px',
+                        borderRadius: '50%',
+                        background: 'rgba(0, 0, 0, 0.45)',
+                        border: '1px solid rgba(255, 255, 255, 0.5)',
+                        color: '#ffffff',
+                        cursor: 'pointer',
+                        zIndex: 30,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                        transition: 'opacity 0.2s ease',
+                        opacity: audioEnabled ? 1 : 0.5
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.opacity = audioEnabled ? '1' : '0.5' }}
+                    title={audioEnabled ? 'Desactivar sonido' : 'Activar sonido'}
+                    aria-label={audioEnabled ? 'Desactivar sonido' : 'Activar sonido'}
+                >
+                    {audioEnabled ? (
+                        /* Speaker with sound waves */
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M15.54 3.54a8 8 0 0 1 0 11.32"></path>
+                            <path d="M19.07 4.93a16 16 0 0 1 0 22.63"></path>
+                        </svg>
+                    ) : (
+                        /* Speaker muted */
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <line x1="23" y1="9" x2="17" y2="15"></line>
+                            <line x1="17" y1="9" x2="23" y2="15"></line>
+                        </svg>
+                    )}
+                </button>
             </div>
         </>
     )

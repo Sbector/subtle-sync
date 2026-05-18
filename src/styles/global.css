@@ -12,7 +12,8 @@ body {
   margin: 0;
   background: #000000;
   font-family: 'Inter', sans-serif;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   /* Prevent accidental scroll/zoom on mobile */
   touch-action: pan-y;
 }

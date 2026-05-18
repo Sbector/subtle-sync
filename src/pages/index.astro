@@ -44,57 +44,59 @@ import Scene from '../components/Scene.jsx';
 		<section class="section fade-item">
 			<div class="content">
 				<h2 class="heading">Costo estimado <span class="heading-note">(por módulo / luz)</span></h2>
-				<table class="cost-table">
-					<thead>
-						<tr>
-							<th>Ítem</th>
-							<th>Descripción</th>
-							<th>Costo estimado</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>ESP32</td>
-							<td>Microcontrolador principal</td>
-							<td>$179 MXN</td>
-						</tr>
-						<tr>
-							<td>MAX98357A</td>
-							<td>Amplificador de audio digital</td>
-							<td>$100 MXN</td>
-						</tr>
-						<tr>
-							<td>Bocina 4&quot; 4Ω</td>
-							<td>Audio</td>
-							<td>$60 MXN</td>
-						</tr>
-						<tr class="cost-row-pending">
-							<td>Sistema de iluminación</td>
-							<td>LED o fuente lumínica</td>
-							<td>—</td>
-						</tr>
-						<tr class="cost-row-pending">
-							<td>Controlador de luz</td>
-							<td>MOSFET o circuito de potencia</td>
-							<td>—</td>
-						</tr>
-						<tr class="cost-row-pending">
-							<td>Fuente de alimentación</td>
-							<td>Regulación y energía</td>
-							<td>—</td>
-						</tr>
-						<tr class="cost-row-pending">
-							<td>Cableado</td>
-							<td>Conexiones y distribución</td>
-							<td>—</td>
-						</tr>
-						<tr class="cost-row-pending">
-							<td>Caja de resonancia</td>
-							<td>Estructura acústica para bocina</td>
-							<td>—</td>
-						</tr>
-					</tbody>
-				</table>
+				<div class="cost-table-wrapper">
+					<table class="cost-table">
+						<thead>
+							<tr>
+								<th>Ítem</th>
+								<th>Descripción</th>
+								<th>Costo estimado</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>ESP32</td>
+								<td>Microcontrolador principal</td>
+								<td>$179 MXN</td>
+							</tr>
+							<tr>
+								<td>MAX98357A</td>
+								<td>Amplificador de audio digital</td>
+								<td>$100 MXN</td>
+							</tr>
+							<tr>
+								<td>Bocina 4&quot; 4Ω</td>
+								<td>Audio</td>
+								<td>$60 MXN</td>
+							</tr>
+							<tr class="cost-row-pending">
+								<td>Sistema de iluminación</td>
+								<td>LED o fuente lumínica</td>
+								<td>—</td>
+							</tr>
+							<tr class="cost-row-pending">
+								<td>Controlador de luz</td>
+								<td>MOSFET o circuito de potencia</td>
+								<td>—</td>
+							</tr>
+							<tr class="cost-row-pending">
+								<td>Fuente de alimentación</td>
+								<td>Regulación y energía</td>
+								<td>—</td>
+							</tr>
+							<tr class="cost-row-pending">
+								<td>Cableado</td>
+								<td>Conexiones y distribución</td>
+								<td>—</td>
+							</tr>
+							<tr class="cost-row-pending">
+								<td>Caja de resonancia</td>
+								<td>Estructura acústica para bocina</td>
+								<td>—</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 				<p class="cost-total"><strong>Total estimado por módulo: $339 MXN</strong> <span class="cost-note">+ componentes pendientes</span></p>
 			</div>
 		</section>
@@ -132,6 +134,8 @@ import Scene from '../components/Scene.jsx';
 			pointer-events: auto;
 			width: 45%;
 			padding-left: 4rem;
+			touch-action: pan-y;
+			user-select: none;
 		}
 
 		.title {
@@ -188,6 +192,13 @@ import Scene from '../components/Scene.jsx';
 			border-collapse: collapse;
 			margin: 2rem 0;
 			font-family: 'Inter', sans-serif;
+		}
+
+		.cost-table-wrapper {
+			width: 100%;
+			overflow-x: auto;
+			margin: 2rem 0;
+			border-radius: 8px;
 		}
 
 		.cost-table thead {
