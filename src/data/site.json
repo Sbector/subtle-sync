@@ -42,19 +42,53 @@
       },
       {
         "item": "Controlador de luz",
-        "description": "MOSFET o circuito de potencia"
+        "description": "MOSFET o circuito de potencia",
+        "cost": null
       },
       {
         "item": "Fuente de alimentación",
-        "description": "Regulación y energía"
+        "description": "Regulación y energía",
+        "cost": null
       },
       {
         "item": "Cableado",
-        "description": "Conexiones y distribución"
+        "description": "Conexiones y distribución",
+        "cost": null
       },
       {
         "item": "Caja de resonancia",
-        "description": "Estructura acústica para bocina"
+        "description": "Estructura acústica para bocina",
+        "cost": null
+      },
+      {
+        "item": "Conectores y soldadura",
+        "description": "Conectores JST, cable de soldadura, estaño",
+        "cost": null
+      },
+      {
+        "item": "Transformador/Regulador",
+        "description": "Regulación de voltaje para los módulos",
+        "cost": null
+      },
+      {
+        "item": "Sincronización de red",
+        "description": "Protocolo WiFi o I2C para sincronizar módulos",
+        "cost": null
+      },
+      {
+        "item": "Encapsulado",
+        "description": "Caja de protección, aislamiento, impermeabilización",
+        "cost": null
+      },
+      {
+        "item": "Sensor de luz (opcional)",
+        "description": "Fotoresistor o sensor LDR para feedback",
+        "cost": null
+      },
+      {
+        "item": "Instalación y logística",
+        "description": "Transporte, montaje, pruebas de campo",
+        "cost": null
       }
     ]
   }
