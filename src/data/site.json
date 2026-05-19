@@ -1,0 +1,65 @@
+{
+  "intro": {
+    "title": "Subtle Sync",
+    "paragraph": "Subtle Sync es una instalación audiovisual inspirada en los momentos de sincronización espontánea que aparecen al observar luces de obstrucción en la distancia."
+  },
+  "description": {
+    "heading": "Descripción",
+    "paragraph": "Subtle Sync funciona como una especie de ready-made perceptual basado en la observación de luces de obstrucción aérea en cerros y estructuras elevadas. La instalación reúne múltiples módulos de luz y sonido que operan con ritmos ligeramente distintos; con el tiempo, aparecen momentos efímeros de sincronización total antes de volver al desfase. La pieza busca trasladar ese fenómeno perceptual cotidiano a una experiencia espacial y sonora donde la sincronía emerge como un evento temporal e inestable.",
+    "video": "/images/cerro.mp4"
+  },
+  "justification": {
+    "heading": "Justificación",
+    "paragraphs": [
+      "La sincronía y la simultaneidad son condiciones fundamentales de la vida contemporánea. Sistemas tecnológicos, redes digitales y dinámicas sociales operan cada vez más mediante procesos de coordinación temporal compartida.",
+      "Subtle Sync explora la tensión entre autonomía y alineación a través de módulos independientes que ocasionalmente convergen en estados de orden temporal. La obra plantea la sincronía no como una condición permanente, sino como un acuerdo momentáneo entre sistemas separados."
+    ]
+  },
+  "cost": {
+    "heading": "Costo estimado",
+    "headingNote": "(por módulo / luz)",
+    "modules": 1,
+    "items": [
+      {
+        "item": "ESP32",
+        "description": "Microcontrolador principal",
+        "cost": 179
+      },
+      {
+        "item": "MAX98357A",
+        "description": "Amplificador de audio digital",
+        "cost": 100
+      },
+      {
+        "item": "Bocina 4\" 4Ω",
+        "description": "Audio",
+        "cost": 60
+      },
+      {
+        "item": "Sistema de iluminación",
+        "description": "LED o fuente lumínica",
+        "cost": null
+      },
+      {
+        "item": "Controlador de luz",
+        "description": "MOSFET o circuito de potencia",
+        "cost": null
+      },
+      {
+        "item": "Fuente de alimentación",
+        "description": "Regulación y energía",
+        "cost": null
+      },
+      {
+        "item": "Cableado",
+        "description": "Conexiones y distribución",
+        "cost": null
+      },
+      {
+        "item": "Caja de resonancia",
+        "description": "Estructura acústica para bocina",
+        "cost": null
+      }
+    ]
+  }
+}

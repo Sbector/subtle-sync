@@ -1,0 +1,68 @@
+media:
+  input: public
+  output: /
+
+content:
+  - name: site
+    label: Site Content
+    type: file
+    path: src/data/site.json
+    format: json
+    fields:
+      - name: intro
+        type: object
+        fields:
+          - name: title
+            type: string
+            required: true
+          - name: paragraph
+            type: text
+            required: true
+      - name: description
+        type: object
+        fields:
+          - name: heading
+            type: string
+            required: true
+          - name: paragraph
+            type: text
+            required: true
+          - name: video
+            type: file
+            required: true
+      - name: justification
+        type: object
+        fields:
+          - name: heading
+            type: string
+            required: true
+          - name: paragraphs
+            type: text
+            list: true
+            required: true
+      - name: cost
+        type: object
+        fields:
+          - name: heading
+            type: string
+            required: true
+          - name: headingNote
+            type: string
+          - name: modules
+            type: number
+            required: true
+          - name: items
+            type: object
+            list:
+              collapsible:
+                collapsed: true
+                summary: "{item} — {cost}"
+            fields:
+              - name: item
+                type: string
+                required: true
+              - name: description
+                type: string
+                required: true
+              - name: cost
+                type: number

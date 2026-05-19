@@ -1,6 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Scene from '../components/Scene.jsx';
+import site from '../data/site.json';
+
+// Calculate cost totals
+const totalPerModule = site.cost.items.reduce((sum, item) => {
+	return sum + (item.cost ?? 0);
+}, 0);
+
+const totalForAllModules = totalPerModule * site.cost.modules;
+const hasPending = site.cost.items.some(item => item.cost === null);
 ---
 
 <Layout title="Subtle Sync">
@@ -9,9 +18,9 @@ import Scene from '../components/Scene.jsx';
 		<!-- Sección 1: Introducción -->
 		<section class="section fade-item visible">
 			<div class="content">
-				<h1 class="title">Subtle Sync</h1>
+				<h1 class="title">{site.intro.title}</h1>
 				<p class="paragraph">
-					Subtle Sync es una instalación audiovisual inspirada en los momentos de sincronización espontánea que aparecen al observar luces de obstrucción en la distancia.
+					{site.intro.paragraph}
 				</p>
 			</div>
 		</section>
@@ -19,31 +28,30 @@ import Scene from '../components/Scene.jsx';
 		<!-- Sección 2: Descripción -->
 		<section class="section fade-item">
 			<div class="content">
-				<h2 class="heading">Descripción</h2>
+				<h2 class="heading">{site.description.heading}</h2>
 				<p class="paragraph">
-					Subtle Sync funciona como una especie de ready-made perceptual basado en la observación de luces de obstrucción aérea en cerros y estructuras elevadas. La instalación reúne múltiples módulos de luz y sonido que operan con ritmos ligeramente distintos; con el tiempo, aparecen momentos efímeros de sincronización total antes de volver al desfase. La pieza busca trasladar ese fenómeno perceptual cotidiano a una experiencia espacial y sonora donde la sincronía emerge como un evento temporal e inestable.
+					{site.description.paragraph}
 				</p>
-			<video src="/images/cerro.mp4" class="content-image" autoplay loop muted playsinline></video>
+			<video src={site.description.video} class="content-image" autoplay loop muted playsinline></video>
 			</div>
 		</section>
 
 		<!-- Sección 3: Justificación -->
 		<section class="section fade-item">
 			<div class="content">
-				<h2 class="heading">Justificación</h2>
-				<p class="paragraph">
-					La sincronía y la simultaneidad son condiciones fundamentales de la vida contemporánea. Sistemas tecnológicos, redes digitales y dinámicas sociales operan cada vez más mediante procesos de coordinación temporal compartida.
-				</p>
-				<p class="paragraph">
-					Subtle Sync explora la tensión entre autonomía y alineación a través de módulos independientes que ocasionalmente convergen en estados de orden temporal. La obra plantea la sincronía no como una condición permanente, sino como un acuerdo momentáneo entre sistemas separados.
-				</p>
+				<h2 class="heading">{site.justification.heading}</h2>
+				{site.justification.paragraphs.map((paragraph) => (
+					<p class="paragraph">
+						{paragraph}
+					</p>
+				))}
 			</div>
 		</section>
 
 		<!-- Sección 4: Costo Estimado -->
 		<section class="section fade-item">
 			<div class="content">
-				<h2 class="heading">Costo estimado <span class="heading-note">(por módulo / luz)</span></h2>
+				<h2 class="heading">{site.cost.heading} <span class="heading-note">{site.cost.headingNote}</span></h2>
 				<div class="cost-table-wrapper">
 					<table class="cost-table">
 						<thead>
@@ -54,50 +62,22 @@ import Scene from '../components/Scene.jsx';
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>ESP32</td>
-								<td>Microcontrolador principal</td>
-								<td>$179 MXN</td>
-							</tr>
-							<tr>
-								<td>MAX98357A</td>
-								<td>Amplificador de audio digital</td>
-								<td>$100 MXN</td>
-							</tr>
-							<tr>
-								<td>Bocina 4&quot; 4Ω</td>
-								<td>Audio</td>
-								<td>$60 MXN</td>
-							</tr>
-							<tr class="cost-row-pending">
-								<td>Sistema de iluminación</td>
-								<td>LED o fuente lumínica</td>
-								<td>—</td>
-							</tr>
-							<tr class="cost-row-pending">
-								<td>Controlador de luz</td>
-								<td>MOSFET o circuito de potencia</td>
-								<td>—</td>
-							</tr>
-							<tr class="cost-row-pending">
-								<td>Fuente de alimentación</td>
-								<td>Regulación y energía</td>
-								<td>—</td>
-							</tr>
-							<tr class="cost-row-pending">
-								<td>Cableado</td>
-								<td>Conexiones y distribución</td>
-								<td>—</td>
-							</tr>
-							<tr class="cost-row-pending">
-								<td>Caja de resonancia</td>
-								<td>Estructura acústica para bocina</td>
-								<td>—</td>
-							</tr>
+							{site.cost.items.map((item) => (
+								<tr class={item.cost === null ? 'cost-row-pending' : ''}>
+									<td>{item.item}</td>
+									<td>{item.description}</td>
+									<td>{item.cost === null ? '—' : `$${item.cost} MXN`}</td>
+								</tr>
+							))}
 						</tbody>
 					</table>
 				</div>
-				<p class="cost-total"><strong>Total estimado por módulo: $339 MXN</strong> <span class="cost-note">+ componentes pendientes</span></p>
+				<div class="cost-total">
+					<p><strong>Total estimado por módulo: ${totalPerModule} MXN</strong> {hasPending && <span class="cost-note">+ componentes pendientes</span>}</p>
+					{site.cost.modules > 1 && (
+						<p><strong>Total para {site.cost.modules} módulos: ${totalForAllModules} MXN</strong></p>
+					)}
+				</div>
 			</div>
 		</section>
 
@@ -226,6 +206,10 @@ import Scene from '../components/Scene.jsx';
 			color: #00e5ff;
 			margin-top: 2rem;
 			text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+		}
+
+		.cost-total p {
+			margin: 0.5rem 0;
 		}
 
 		.cost-note {
