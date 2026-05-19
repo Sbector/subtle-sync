@@ -38,27 +38,23 @@
       {
         "item": "Sistema de iluminación",
         "description": "LED o fuente lumínica",
-        "cost": null
+        "cost": 300
       },
       {
         "item": "Controlador de luz",
-        "description": "MOSFET o circuito de potencia",
-        "cost": null
+        "description": "MOSFET o circuito de potencia"
       },
       {
         "item": "Fuente de alimentación",
-        "description": "Regulación y energía",
-        "cost": null
+        "description": "Regulación y energía"
       },
       {
         "item": "Cableado",
-        "description": "Conexiones y distribución",
-        "cost": null
+        "description": "Conexiones y distribución"
       },
       {
         "item": "Caja de resonancia",
-        "description": "Estructura acústica para bocina",
-        "cost": null
+        "description": "Estructura acústica para bocina"
       }
     ]
   }
