@@ -11,8 +11,12 @@
   "justification": {
     "heading": "Justificación",
     "paragraphs": [
-      "La sincronía y la simultaneidad son condiciones fundamentales de la vida contemporánea. Sistemas tecnológicos, redes digitales y dinámicas sociales operan cada vez más mediante procesos de coordinación temporal compartida.",
-      "Subtle Sync explora la tensión entre autonomía y alineación a través de módulos independientes que ocasionalmente convergen en estados de orden temporal. La obra plantea la sincronía no como una condición permanente, sino como un acuerdo momentáneo entre sistemas separados."
+      "Reducción de costos: La naturaleza modular de la pieza permite que, a mayor escala (más luces), el costo unitario por componente se reduzca significativamente. Esto optimiza la inversión inicial de la convocatoria.",
+      "Distribución justa del estímulo: La producción está pensada para proteger el presupuesto del colectivo, garantizando que quede un margen suficiente para repartir el estímulo económico de manera equitativa entre los participantes.",
+      "Módulos transferibles y desmontables: Propongo que cada miembro del colectivo ensamble o se asigne una luz. Al terminar la exposición, cada quien conserva su módulo. El diseño electrónico será abierto y modular, pensado para que, si alguien lo prefiere, pueda desarmarlo y reutilizar los componentes (microcontroladores, LEDs) en futuros proyectos personales. La pieza no muere en la bodega; se recicla en comunidad.",
+      "Red local e interacción (ESP-NOW): Al utilizar el protocolo de comunicación inalámbrica ESP-NOW, podemos centralizar el comportamiento de los módulos desde un \"centro de mando\". Esto abre un campo de experimentación para el diseño sonoro: la instalación deja de ser un sistema puramente algorítmico y puede ser ejecutada en vivo, funcionando como un instrumento de composición espacial y sonora.",
+      "Diseño abierto: La apariencia física de cada módulo/luz no es rígida. Puede adaptarse tanto al uso de materiales de desecho y reciclaje como a componentes de fabricación digital dedicados (MDF, acrílico). Esta apertura permite que el colectivo aporte su propia identidad visual y experimentación material a la estructura de las luces.",
+      "Atmósfera de contemplación: Para que la sincronía sutil de la pieza sea efectiva, el espacio requiere limpieza visual y acústica, aislándose del \"ruido\" de otras obras. Propongo una museografía de baja intensidad que invite al cuerpo a detenerse: un entorno calmo con mobiliario básico (bancas, cojines o tapetes) donde el público pueda sentarse o acostarse a contemplar el pulso del espacio."
     ]
   },
   "cost": {
