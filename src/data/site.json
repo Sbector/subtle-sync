@@ -1,11 +1,11 @@
 {
   "intro": {
     "title": "Subtle Sync",
-    "paragraph": "Subtle Sync es una instalación audiovisual inspirada en los momentos de sincronización espontánea que aparecen al observar luces de obstrucción en la distancia."
+    "paragraph": "Instalación audiovisual que invita a la contemplación dentro y fuera del museo."
   },
   "description": {
     "heading": "Descripción",
-    "paragraph": "Subtle Sync funciona como una especie de ready-made perceptual basado en la observación de luces de obstrucción aérea en cerros y estructuras elevadas. La instalación reúne múltiples módulos de luz y sonido que operan con ritmos ligeramente distintos; con el tiempo, aparecen momentos efímeros de sincronización total antes de volver al desfase. La pieza busca trasladar ese fenómeno perceptual cotidiano a una experiencia espacial y sonora donde la sincronía emerge como un evento temporal e inestable.",
+    "paragraph": "Subtle Sync surge de un ejercicio de atención cotidiana: recortar el paisaje nocturno, elegir un par de luces de obstrucción en un cerro lejano y esperar a que sus parpadeos coincidan, \"alineando el azar\". La instalación traslada a la sala este pulso a través de módulos de luz y sonido sutilmente desfasados que, de forma efímera, alcanzan la sincronía. La pieza no busca ser un objeto cerrado, sino un detonador que dote al espectador de una herramienta perceptual autónoma. Es una propuesta en proceso que ensaya cómo el espectador puede salir al espacio cotidiano y componer sus propias obras mentales con los acontecimientos que ya existen.",
     "video": "/images/cerro.mp4"
   },
   "justification": {
@@ -38,7 +38,7 @@
       {
         "item": "Fuente lumínica",
         "description": "LED",
-        "cost": 300
+        "cost": 150
       },
       {
         "item": "Controlador de luz",
@@ -63,7 +63,7 @@
       {
         "item": "Caja de resonancia",
         "description": "Cajón para bocina",
-        "cost": 200
+        "cost": 80
       },
       {
         "item": "Cables, PCB, soldadura, etc.",
