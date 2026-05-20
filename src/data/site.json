@@ -36,59 +36,40 @@
         "cost": 60
       },
       {
-        "item": "Sistema de iluminación",
-        "description": "LED o fuente lumínica",
+        "item": "Fuente lumínica",
+        "description": "LED",
         "cost": 300
       },
       {
         "item": "Controlador de luz",
-        "description": "MOSFET o circuito de potencia",
-        "cost": null
+        "description": "MOSFET IRLZ44N",
+        "cost": 150
       },
       {
         "item": "Fuente de alimentación",
-        "description": "Regulación y energía",
-        "cost": null
+        "description": "Fuente DC 12v",
+        "cost": 100
       },
       {
-        "item": "Cableado",
-        "description": "Conexiones y distribución",
-        "cost": null
-      },
-      {
-        "item": "Caja de resonancia",
-        "description": "Estructura acústica para bocina",
-        "cost": null
-      },
-      {
-        "item": "Conectores y soldadura",
-        "description": "Conectores JST, cable de soldadura, estaño",
-        "cost": null
-      },
-      {
-        "item": "Transformador/Regulador",
-        "description": "Regulación de voltaje para los módulos",
-        "cost": null
+        "item": "Regulador",
+        "description": "LM2596",
+        "cost": 70
       },
       {
         "item": "Sincronización de red",
-        "description": "Protocolo WiFi o I2C para sincronizar módulos",
-        "cost": null
+        "description": "Protocolo WiFi o I2C para sincronizar módulos"
       },
       {
         "item": "Encapsulado",
-        "description": "Caja de protección, aislamiento, impermeabilización",
-        "cost": null
+        "description": "Caja de protección, aislamiento, impermeabilización"
       },
       {
         "item": "Sensor de luz (opcional)",
-        "description": "Fotoresistor o sensor LDR para feedback",
-        "cost": null
+        "description": "Fotoresistor o sensor LDR para feedback"
       },
       {
         "item": "Instalación y logística",
-        "description": "Transporte, montaje, pruebas de campo",
-        "cost": null
+        "description": "Transporte, montaje, pruebas de campo"
       }
     ]
   }
