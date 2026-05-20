@@ -57,19 +57,17 @@
       },
       {
         "item": "Sincronización de red",
-        "description": "Protocolo WiFi o I2C para sincronizar módulos"
+        "description": "Incluido si se usa el protocolo ESP-NOW",
+        "cost": 0
       },
       {
-        "item": "Encapsulado",
-        "description": "Caja de protección, aislamiento, impermeabilización"
+        "item": "Caja de resonancia",
+        "description": "Cajón para bocina",
+        "cost": 200
       },
       {
-        "item": "Sensor de luz (opcional)",
-        "description": "Fotoresistor o sensor LDR para feedback"
-      },
-      {
-        "item": "Instalación y logística",
-        "description": "Transporte, montaje, pruebas de campo"
+        "item": "Cables, PCB, soldadura, etc.",
+        "description": "Insumos para armado e instalación"
       }
     ]
   }
